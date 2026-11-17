@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đăng nhập – Team Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f5f2;--card:#fff;--ink:#14213d;--muted:#5b6578;--line:#dfe3e0;--brand:#0b63b6;--sun:#f2a900;--panel:#14213d;--bad:#c8352e;--ok:#2e7d4f;color-scheme:light}
+@media (prefers-color-scheme: dark){:root{--bg:#0d1422;--card:#141e33;--ink:#e6ecf5;--muted:#97a3b9;--line:#25324d;--brand:#5aaef0;--sun:#f7b92b;--panel:#0a1120;--bad:#f07068;--ok:#5cc28a;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);background:var(--bg);color:var(--ink);font:15px/1.55 "Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.side{position:relative;overflow:hidden;min-height:100vh;background:var(--panel);color:#fff;padding:48px;display:flex;flex-direction:column;justify-content:flex-end}
+.side svg{position:absolute;right:-120px;top:-120px;width:520px;height:520px}
+.side svg line{stroke:var(--sun);stroke-width:7;stroke-linecap:round;stroke-dasharray:60;stroke-dashoffset:60;animation:ray .8s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:calc(var(--i) * 40ms)}
+@keyframes ray{to{stroke-dashoffset:0}}
+.side h2{position:relative;margin:0;font-size:clamp(30px,4vw,46px);line-height:1.08;font-weight:800;letter-spacing:-.03em;max-width:12ch}
+.side p{position:relative;margin:14px 0 0;color:#aab5ca;max-width:38ch}
+main{display:grid;place-items:center;padding:32px 16px}
+.box{width:100%;max-width:380px}
+.top h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.02em}
+.top p{margin:4px 0 22px;color:var(--muted)}
+label{display:block;font-size:13px;font-weight:500;color:var(--muted);margin:14px 0 5px}
+input{width:100%;font:inherit;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+input:focus{outline:2px solid var(--brand);outline-offset:0;border-color:var(--brand)}
+button{width:100%;margin-top:22px;font:inherit;font-weight:700;padding:12px;border:1px solid var(--sun);border-radius:10px;color:#14213d;cursor:pointer;background:var(--sun)}
+button:hover{border-color:#14213d}
+button:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+button:disabled{opacity:.6;cursor:default}
+.msg{min-height:20px;margin-top:12px;font-size:14px;color:var(--bad)}
+.msg.ok{color:var(--ok)}
+.hint{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.hide{display:none}
+.pwrow{position:relative}.pwrow .eyeBtn{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:auto;margin:0;padding:6px 8px;background:none;border:none;color:var(--muted);font-size:16px;font-weight:400}
+@media (max-width:820px){body{grid-template-columns:1fr;grid-template-rows:auto 1fr}.side{padding:28px 20px;min-height:180px}.side svg{width:340px;height:340px;right:-110px;top:-110px}.side p{display:none}}
+@media (prefers-reduced-motion: reduce){.side svg line{animation:none;stroke-dashoffset:0}}
+</style>
+</head>
+<body>
+<aside class="side" aria-hidden="true">
+  <svg viewBox="0 0 200 200" id="sunArt"><circle cx="100" cy="100" r="44" fill="#f2a900"/></svg>
+  <h2>Mỗi việc xong là một tia nắng.</h2>
+  <p>Bảng kế hoạch chung của phòng Nhân sự: ai đang làm gì, việc nào sắp tới hạn, ai đang dẫn đầu Bảng vàng.</p>
+</aside>
+<main>
+<div class="box">
+  <div class="top"><h1 id="hTitle">Đăng nhập Team Tracker</h1><p id="hSub">Dùng tài khoản quản trị viên đã cấp cho bạn</p></div>
+
+  <form id="loginForm" autocomplete="on">
+    <label for="u">Tên đăng nhập</label>
+    <input id="u" name="username" autocomplete="username" required autofocus>
+    <label for="p">Mật khẩu</label>
+    <div class="pwrow"><input id="p" name="password" type="password" autocomplete="current-password" required><button type="button" class="eyeBtn" data-eye="p" aria-label="Hiện mật khẩu">👁️</button></div>
+    <button type="submit">Đăng nhập</button>
+    <div class="msg" id="msg" role="alert"></div>
+    <div class="hint">Chưa có tài khoản? Liên hệ quản trị viên (phòng Nhân sự) để được cấp.</div>
+  </form>
+
+  <form id="changeForm" class="hide" autocomplete="off">
+    <label for="c0">Mật khẩu hiện tại (mật khẩu tạm được cấp)</label>
+    <input id="c0" type="password" autocomplete="current-password" required>
+    <label for="c1">Mật khẩu mới (ít nhất 8 ký tự, có chữ và số)</label>
+    <div class="pwrow"><input id="c1" type="password" autocomplete="new-password" required><button type="button" class="eyeBtn" data-eye="c1" aria-label="Hiện mật khẩu">👁️</button></div>
+    <label for="c2">Nhập lại mật khẩu mới</label>
+    <input id="c2" type="password" autocomplete="new-password" required>
+    <button type="submit">Lưu mật khẩu và vào trang</button>
+    <div class="msg" id="msg2" role="alert"></div>
+  </form>
+</div>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+(() => { const svg = $("#sunArt"), n = 16; let h = "";
+  for (let i = 0; i < n; i++){ const a = i / n * 2 * Math.PI, r0 = 54, r1 = 54 + (i % 2 ? 22 : 38);
+    h += `<line style="--i:${i}" x1="${(100 + r0 * Math.cos(a)).toFixed(1)}" y1="${(100 + r0 * Math.sin(a)).toFixed(1)}" x2="${(100 + r1 * Math.cos(a)).toFixed(1)}" y2="${(100 + r1 * Math.sin(a)).toFixed(1)}"/>`; }
+  svg.insertAdjacentHTML("afterbegin", h); })();
+const api = async (url, data) => {
+  const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json", "X-Requested-With": "team-tracker" }, body: JSON.stringify(data || {}) });
+  let j = {}; try { j = await r.json(); } catch {}
+  if (!r.ok) throw new Error(j.error || "Có lỗi xảy ra, thử lại nhé");
+  return j;
+};
+function showChange(){ $("#loginForm").classList.add("hide"); $("#changeForm").classList.remove("hide");
+  $("#hTitle").textContent = "Đặt mật khẩu mới"; $("#hSub").textContent = "Lần đầu đăng nhập: đổi mật khẩu tạm để bảo mật tài khoản"; $("#c0").focus(); }
+document.querySelectorAll("[data-eye]").forEach(b => b.onclick = () => { const i = $("#" + b.dataset.eye); i.type = i.type === "password" ? "text" : "password"; });
+if (new URLSearchParams(location.search).get("change") === "1") showChange();
+
+$("#loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault(); const btn = e.target.querySelector("button[type=submit]"); btn.disabled = true; $("#msg").textContent = "";
+  try {
+    const r = await api("/api/login", { username: $("#u").value.trim(), password: $("#p").value });
+    if (r.mustChange) { $("#c0").value = $("#p").value; showChange(); $("#c1").focus(); }
+    else { $("#msg").className = "msg ok"; $("#msg").textContent = `Chào ${r.name}! Đang vào trang…`; location.href = "/"; }
+  } catch (err) { $("#msg").className = "msg"; $("#msg").textContent = err.message; $("#p").select(); }
+  btn.disabled = false;
+});
+$("#changeForm").addEventListener("submit", async (e) => {
+  e.preventDefault(); $("#msg2").textContent = "";
+  if ($("#c1").value !== $("#c2").value) { $("#msg2").textContent = "Hai lần nhập mật khẩu mới chưa khớp"; return; }
+  try { await api("/api/password", { current: $("#c0").value, next: $("#c1").value });
+    $("#msg2").className = "msg ok"; $("#msg2").textContent = "Đã đổi mật khẩu. Đang vào trang…"; setTimeout(() => location.href = "/", 600);
+  } catch (err) { $("#msg2").className = "msg"; $("#msg2").textContent = err.message; }
+});
+</script>
+</body>
+</html>
